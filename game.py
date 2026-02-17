@@ -13,6 +13,7 @@ from scripts.shop_scripts.config import SHOP_ITEMS
 from scripts.run_scripts.level import load_level
 from scripts.loops.run_loop import game_loop
 from scripts.loops.shop_loop import shop_loop
+from scripts.loops.start_loop import start_loop
 
 # Fix dla PyInstaller (jeśli będziesz robił EXE)
 if hasattr(sys, '_MEIPASS'):
@@ -84,13 +85,11 @@ class Game:
         self.ground = Ground(self, 164)
 
         self.screenshake = 0
-        self.state = 'game'
         self.invincibility = 0
         self.high_score = 0
-        
-        # Start
-        load_level(self)
 
+        self.state = 'start'
+        
     def run(self):
         # Muzyka
         try:
@@ -108,6 +107,8 @@ class Game:
                 game_loop(self)
             elif self.state == 'shop':
                 shop_loop(self)
+            elif self.state == 'start':
+                start_loop(self)
 
 # Uruchomienie gry
 if __name__ == "__main__":

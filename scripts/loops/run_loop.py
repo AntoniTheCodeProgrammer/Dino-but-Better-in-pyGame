@@ -6,6 +6,7 @@ from scripts.run_scripts.objects import Obstacle, Coin
 from scripts.run_scripts.level import load_level
 
 def game_loop(game):
+    load_level(game)   
     while game.state == 'game':
         # 1. Rysowanie Tła i Podłogi
         game.display.fill((0,0,0,0))
@@ -42,18 +43,18 @@ def game_loop(game):
         if game.cooldown == 0:
             if random.random() < 0.01:
                 game.obstacles.append(Obstacle(game, [400, 152], 0))
-                game.cooldown = 120 / game.level
+                game.cooldown = 120
             elif random.random() < 0.01:
                 game.obstacles.append(Obstacle(game, [400, 120], 1))
-                game.cooldown = 120 / game.level
+                game.cooldown = 120
                 if random.random() < 0.5:
                     game.coinsObjects.append(Coin(game, [407, 100]))
             elif random.random() < 0.01:
                 game.obstacles.append(Obstacle(game, [400, 148], 2))
-                game.cooldown = 60 / game.level
+                game.cooldown = 60
             elif random.random() < 0.01:
                 game.coinsObjects.append(Coin(game, [400, 145]))
-                game.cooldown = 10 / game.level
+                game.cooldown = 10
         else:
             game.cooldown -= 1
 
