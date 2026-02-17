@@ -1,0 +1,23 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Środowiska wirtualne (uv tworzy .venv) ---
+.venv/
+venv/
+env/
+
+# --- Pygame / Gra ---
+saves/
+build/
+dist/
+*.spec
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+uv.lock
