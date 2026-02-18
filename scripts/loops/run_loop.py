@@ -1,16 +1,19 @@
 # scripts/loops/game_loop.py
 import pygame
 import sys
-import random
-from scripts.run_scripts.objects import Obstacle, Coin
-from scripts.run_scripts.level import load_level
+
+from scripts.run_scripts.level import load_level, gen_obstacle, gen_platform
+from scripts.run_scripts.ground import Ground
+from scripts.run_scripts.config import levels
 
 def game_loop(game):
     load_level(game)   
+    boss_fight = False
     while game.state == 'game':
         # 1. Rysowanie Tła i Podłogi
         game.display.fill((0,0,0,0))
         game.display_2.blit(game.assets['background'], (0,0))
+        game.ground = Ground(game, 164, levels[game.level]['ground'])
         game.ground.render(game.display)
         
         # Efekt przejścia (kółko na starcie)
@@ -39,24 +42,11 @@ def game_loop(game):
         game.hearts.update()
         game.hearts.render(game.display_2)
         
-        # --- GENEROWANIE PRZESZKÓD ---
-        if game.cooldown == 0:
-            if random.random() < 0.01:
-                game.obstacles.append(Obstacle(game, [400, 152], 0))
-                game.cooldown = 120
-            elif random.random() < 0.01:
-                game.obstacles.append(Obstacle(game, [400, 120], 1))
-                game.cooldown = 120
-                if random.random() < 0.5:
-                    game.coinsObjects.append(Coin(game, [407, 100]))
-            elif random.random() < 0.01:
-                game.obstacles.append(Obstacle(game, [400, 148], 2))
-                game.cooldown = 60
-            elif random.random() < 0.01:
-                game.coinsObjects.append(Coin(game, [400, 145]))
-                game.cooldown = 10
+        # --- GENEROWANIE PRZESZKÓD LUB PLATFORM ---
+        if boss_fight:
+            gen_platform(game)
         else:
-            game.cooldown -= 1
+            gen_obstacle(game)
 
         # Licznik nieśmiertelności
         if game.invincibility > 0:
@@ -87,6 +77,16 @@ def game_loop(game):
             else:
                 obstacle.render(game.display)
 
+        # --- UPDATE PLATFORM ---
+        for platform in game.platforms.copy():
+            platform.update(alive=game.dead, speed=game.level)
+            
+            # Usuwanie poza ekranem
+            if platform.pos[0] < -50:
+                game.platforms.remove(platform)
+
+            platform.render(game.display)
+
         # --- UPDATE MONET ---
         for coin in game.coinsObjects.copy():
             coin.update(alive=game.dead, speed=game.level)
@@ -105,15 +105,16 @@ def game_loop(game):
             
             game.points += 0.03
             game.player.update_flamethrower()
-            
-            # Poziom trudności rośnie z punktami
-            game.level = game.points // 100 + 1
         
         game.player.render(game.display)
 
         # --- UI (User Interface) ---
         if game.points > game.high_score:
             game.high_score = game.points
+
+
+        if not boss_fight and game.points >= levels[game.level]['lenght']:
+            boss_fight = True
 
         ui_padding = 8 
         
@@ -130,7 +131,7 @@ def game_loop(game):
         life_text = game.font2.render(f'{game.lives}', True, (255, 255, 255))
         game.display.blit(life_text, (ui_padding + heart_img.get_width() + 5, heart_y + 2))
 
-        # Punkty (Prawy górny róg)
+        # Punkty
         score_text = game.font2.render(f'Score: {int(game.points)}', True, (255, 255, 255))
         score_rect = score_text.get_rect(topright=(game.display.get_width() - ui_padding, ui_padding))
         game.display.blit(score_text, score_rect)

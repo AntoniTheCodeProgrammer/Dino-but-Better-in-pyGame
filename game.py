@@ -6,11 +6,9 @@ import pygame
 # Importy z naszych skryptów
 from scripts.run_scripts.entities import Player
 from scripts.utils import load_image, load_images, load_spritesheet, rotate_images, Animation
-from scripts.run_scripts.ground import Ground
 
 # Importy z nowych plików
 from scripts.shop_scripts.config import SHOP_ITEMS
-from scripts.run_scripts.level import load_level
 from scripts.loops.run_loop import game_loop
 from scripts.loops.shop_loop import shop_loop
 from scripts.loops.start_loop import start_loop
@@ -25,7 +23,7 @@ class Game:
         pygame.display.set_caption("Cat run")
         
         # Ekran
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.screen = pygame.display.set_mode((1600, 900))
         self.display = pygame.Surface((320, 180), pygame.SRCALPHA)
         self.display_2 = pygame.Surface((320, 180))
 
@@ -82,12 +80,12 @@ class Game:
 
         # Inicjalizacja obiektów
         self.player = Player(self, (50,50), (14,14), animation_offset=(-9,-14))
-        self.ground = Ground(self, 164)
 
         self.screenshake = 0
         self.invincibility = 0
         self.high_score = 0
 
+        self.level = 0
         self.state = 'start'
         
     def run(self):

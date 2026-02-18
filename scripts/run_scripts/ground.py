@@ -1,8 +1,8 @@
 class Ground:
-    def __init__(self, game, y_pos):
+    def __init__(self, game, y_pos, block_name):
         self.game = game
         self.y_pos = y_pos
-        self.image = self.game.assets['grass']
+        self.image = self.game.assets[block_name]
         self.width = self.image.get_width()
         self.x = 0
 
