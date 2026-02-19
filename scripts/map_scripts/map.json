@@ -1,0 +1,24 @@
+{
+  "tile_size": 16,
+  "layers": {
+    "background": "background", 
+    "blocks": [
+        {"asset": "grass", "pos": [1, 5]},
+        {"asset": "grass", "pos": [2, 5]},
+        {"asset": "grass", "pos": [3, 5]},
+        {"asset": "grass", "pos": [4, 5]},
+        {"asset": "grass", "pos": [5, 5]},
+        {"asset": "grass", "pos": [6, 5]},
+        {"asset": "grass", "pos": [7, 5]},
+        {"asset": "grass", "pos": [8, 5]},
+        {"asset": "grass", "pos": [9, 5]},
+        {"asset": "grass", "pos": [10, 5]}
+    ],
+    "objects": [
+        {"type": "gate", "pos": [10, 5], "id": "gate_01"},
+        {"type": "level", "pos": [20, 10] , "id": "lv_01"}
+    ],
+    "decorations": [],
+    "spawn": [5, 4]
+  }
+}

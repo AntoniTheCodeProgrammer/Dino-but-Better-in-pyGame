@@ -1,12 +1,12 @@
 # scripts/loops/shop_loop.py
 import pygame
 import sys
-# Importujemy z folderu wyżej (scripts)
-from scripts.shop_scripts.shop import buy_item
-from scripts.run_scripts.level import load_level
+
+from scripts.config import ITEMS
+from scripts.shop_scripts.shop import buy_item, has_item
 
 def shop_loop(game):
-    game.lives = max(1, game.lives)
+    game.lives = max(1, game.full_HP)
     
     # Konfiguracja siatki
     ITEM_SIZE_X = 90
@@ -44,11 +44,13 @@ def shop_loop(game):
         heart_img = game.assets['heart']
         heart_y = ui_padding + 20 
         game.display.blit(heart_img, (ui_padding, heart_y))
-        life_text = game.font2.render(f'{game.lives}', True, (255, 255, 255))
+        life_text = game.font2.render(f'{game.full_HP}', True, (255, 255, 255))
         game.display.blit(life_text, (ui_padding + heart_img.get_width() + 5, heart_y + 2))
 
+        items_in_shop = ['double_jump', 'normal_walk', 'flamethrower', 'extra_life', 'magic_boots', 'more hearts']
+
         # --- Rysowanie Przedmiotów ---
-        for i, item in enumerate(game.items):
+        for i, item_id in enumerate(items_in_shop):
             row = i // COLS
             col = i % COLS
             x = START_X + col * (ITEM_SIZE_X + GAP)
@@ -64,19 +66,20 @@ def shop_loop(game):
                 pygame.draw.rect(game.display, (50, 50, 50), item_rect)
                 text_color = (255, 255, 255)
 
+            is_bought = has_item(game, item_id)
             # Kolor nazwy (Kupiony / Stać / Nie stać)
-            if item['bought']:
+            if is_bought:
                 name_color = (255, 80, 80)
-            elif game.coins >= item['price']:
+            elif game.coins >= ITEMS[item_id]['price']:
                 name_color = (80, 255, 80)
             else:
                 name_color = (150, 150, 150)
 
             # Renderowanie tekstów
-            name_img = game.font2.render(item['name'], True, name_color)
+            name_img = game.font2.render(ITEMS[item_id]['name'], True, name_color)
             game.display.blit(name_img, (x + 5, y + 5))
             
-            price_text = "SOLD" if item['bought'] else str(item['price'])
+            price_text = "SOLD" if is_bought else str(ITEMS[item_id]['price'])
             price_img = game.font2.render(price_text, True, text_color)
             game.display.blit(price_img, (x + 5, y + 25))
 
@@ -93,7 +96,6 @@ def shop_loop(game):
             if event.type == pygame.KEYDOWN:
                 # Wyjście ze sklepu
                 if event.key == pygame.K_ESCAPE or event.key == pygame.K_s:
-                    load_level(game)
                     game.state = 'game'
                 
                 # Kupowanie klawiszami 1-9
@@ -102,7 +104,7 @@ def shop_loop(game):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1: # LPM
-                    for i, item in enumerate(game.items):
+                    for i, item_id in enumerate(items_in_shop):
                         row = i // COLS
                         col = i % COLS
                         x = START_X + col * (ITEM_SIZE_X + GAP)
@@ -110,6 +112,6 @@ def shop_loop(game):
                         item_rect = pygame.Rect(x, y, ITEM_SIZE_X, ITEM_SIZE_Y)
                         
                         if item_rect.collidepoint(game_mouse):
-                            buy_item(game, i)
+                            buy_item(game, item_id)
                     
         game.clock.tick(60)

@@ -6,12 +6,12 @@ import pygame
 # Importy z naszych skryptów
 from scripts.run_scripts.entities import Player
 from scripts.utils import load_image, load_images, load_spritesheet, rotate_images, Animation
+from scripts.save import SaveManager
 
-# Importy z nowych plików
-from scripts.shop_scripts.config import SHOP_ITEMS
 from scripts.loops.run_loop import game_loop
 from scripts.loops.shop_loop import shop_loop
 from scripts.loops.start_loop import start_loop
+from scripts.loops.map_loop import map_loop
 
 # Fix dla PyInstaller (jeśli będziesz robił EXE)
 if hasattr(sys, '_MEIPASS'):
@@ -32,7 +32,7 @@ class Game:
         self.font2 = pygame.font.Font(None, 16)
         
         # Tło (skalowane)
-        raw_bg = load_image('background.jpg')
+        raw_bg = load_image('backgrounds/background.jpg')
         new_width = int(raw_bg.get_width() * (240 / raw_bg.get_height()))
         clean_bg = pygame.transform.smoothscale(raw_bg, (new_width, 240))
 
@@ -45,6 +45,8 @@ class Game:
             'background': clean_bg,
             'grass': load_image('grass.png'),
             'hearts': load_images('hearts/background'),
+            'open': load_image('doors/Doors_open.png'),
+            'closed': load_image('doors/Doors_closed.png'),
             
             # Animacje Kota
             'player/run': Animation(load_spritesheet('cat/run.png', 32, 32), img_dur=6),
@@ -65,25 +67,29 @@ class Game:
         self.sfx['ambience'].set_volume(0.2)
         
         # Zmienne Gracza (Ekwipunek)
-        self.coins = 20
-        self.double_jump = False
-        self.normal_walk = -1
-        self.flametrower = False
-        self.flametrower_cooldown = 0
-        self.flame = 0
-        self.lives = 1
-        self.fast_boots = 2
-        self.hearts_count = 32
         
-        # Sklep (z pliku config)
-        self.items = SHOP_ITEMS
+        # self.double_jump = False
+        # self.normal_walk = -1
+        # self.flametrower = False
+        # self.flametrower_cooldown = 0
+        # self.flame = 0
+        
+        # self.fast_boots = 2
+        # self.hearts_count = 32
+        self.coins = 20
+        self.inventory = []
+        self.unlocked_gates = []
+        self.full_HP = 1
+        self.stats = {}
+
+        self.save_manager = SaveManager(self)
+        self.save_manager.load()
 
         # Inicjalizacja obiektów
         self.player = Player(self, (50,50), (14,14), animation_offset=(-9,-14))
 
         self.screenshake = 0
-        self.invincibility = 0
-        self.high_score = 0
+        # self.high_score = 0
 
         self.level = 0
         self.state = 'start'
@@ -107,6 +113,8 @@ class Game:
                 shop_loop(self)
             elif self.state == 'start':
                 start_loop(self)
+            elif self.state == 'map':
+                map_loop(self)
 
 # Uruchomienie gry
 if __name__ == "__main__":

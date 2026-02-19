@@ -4,16 +4,20 @@ import sys
 
 from scripts.run_scripts.level import load_level, gen_obstacle, gen_platform
 from scripts.run_scripts.ground import Ground
-from scripts.run_scripts.config import levels
+from scripts.config import LEVELS
 
 def game_loop(game):
     load_level(game)   
     boss_fight = False
+    
+    invincibility = 0
+    health = game.full_HP
+
     while game.state == 'game':
         # 1. Rysowanie Tła i Podłogi
         game.display.fill((0,0,0,0))
         game.display_2.blit(game.assets['background'], (0,0))
-        game.ground = Ground(game, 164, levels[game.level]['ground'])
+        game.ground = Ground(game, 164, LEVELS[game.level]['ground'])
         game.ground.render(game.display)
         
         # Efekt przejścia (kółko na starcie)
@@ -49,8 +53,8 @@ def game_loop(game):
             gen_obstacle(game)
 
         # Licznik nieśmiertelności
-        if game.invincibility > 0:
-            game.invincibility -= 1
+        if invincibility > 0:
+            invincibility -= 1
 
         # --- UPDATE PRZESZKÓD ---
         for obstacle in game.obstacles.copy():
@@ -61,18 +65,18 @@ def game_loop(game):
                 game.obstacles.remove(obstacle)
             
             # Kolizje (tylko jak nie jest nieśmiertelny)
-            if game.invincibility == 0:
+            if invincibility == 0:
                 if game.player.rect().colliderect(obstacle.rect):
-                    if game.lives > 1:
-                        game.lives -= 1
-                        game.invincibility = 120 # 2 sekundy ochrony
-                    else:
-                        game.lives = max(game.lives - 1, 0)
+                    if health > 1:
+                        health -= 1
+                        invincibility = 120 # 2 sekundy ochrony
+                    elif health == 1:
+                        health = 0
                         game.dead = 1
 
             # Renderowanie (miganie przy obrażeniach)
-            if game.invincibility > 0:
-                if game.invincibility % 10 < 5:
+            if invincibility > 0:
+                if invincibility % 10 < 5:
                     obstacle.render(game.display)
             else:
                 obstacle.render(game.display)
@@ -99,23 +103,22 @@ def game_loop(game):
 
         # --- UPDATE GRACZA ---
         if not game.dead:
-            # Obliczanie prędkości ruchu tła
-            move_speed = (game.movement[1]-game.movement[0]) / game.fast_boots * game.normal_walk
+            # Obliczanie prędkości ruchu tła / game.fast_boots * game.normal_walk
+            move_speed = (game.movement[1]-game.movement[0]) / 2
             game.player.update(movement=[move_speed, 0])
             
             game.points += 0.03
-            game.player.update_flamethrower()
+            # game.player.update_flamethrower()
         
         game.player.render(game.display)
 
+        if not boss_fight and game.points >= LEVELS[game.level]['length']:
+            if LEVELS[game.level]['boss'] == -1:
+                game.state = 'map'
+            else:
+                boss_fight = True
+
         # --- UI (User Interface) ---
-        if game.points > game.high_score:
-            game.high_score = game.points
-
-
-        if not boss_fight and game.points >= levels[game.level]['lenght']:
-            boss_fight = True
-
         ui_padding = 8 
         
         # Monety
@@ -128,17 +131,13 @@ def game_loop(game):
         heart_img = game.assets['heart']
         heart_y = ui_padding + 20 
         game.display.blit(heart_img, (ui_padding, heart_y))
-        life_text = game.font2.render(f'{game.lives}', True, (255, 255, 255))
+        life_text = game.font2.render(f'{health}', True, (255, 255, 255))
         game.display.blit(life_text, (ui_padding + heart_img.get_width() + 5, heart_y + 2))
 
         # Punkty
         score_text = game.font2.render(f'Score: {int(game.points)}', True, (255, 255, 255))
         score_rect = score_text.get_rect(topright=(game.display.get_width() - ui_padding, ui_padding))
         game.display.blit(score_text, score_rect)
-
-        hi_score_text = game.font2.render(f'HI: {int(game.high_score)}', True, (200, 200, 200))
-        hi_score_rect = hi_score_text.get_rect(topright=(game.display.get_width() - ui_padding, ui_padding + 15))
-        game.display.blit(hi_score_text, hi_score_rect)
 
         # Ramka (Winieta)
         display_mask = pygame.mask.from_surface(game.display)
@@ -160,18 +159,17 @@ def game_loop(game):
                     if not game.dead:
                         game.player.jump()
                     else:
-                        game.lives = max(1, game.lives)
+                        health = game.full_HP
                         load_level(game)      
                 if event.key == pygame.K_r:
-                    game.lives = max(1, game.lives)
+                    health = max(1, health)
                     load_level(game)
                     game.transition = -30
-                if event.key == pygame.K_s:
-                    if game.dead:
-                        game.state = 'shop'
-                if event.key == pygame.K_f and game.flametrower and game.flametrower_cooldown == 0:
-                   if not game.dead:
-                        game.player.active_flametrower()
+                if event.key == pygame.K_ESCAPE:
+                    game.state = 'map'
+                # if event.key == pygame.K_f and 'flamethrower' in game.inventory:
+                #    if not game.dead:
+                #         game.player.active_flametrower()
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:

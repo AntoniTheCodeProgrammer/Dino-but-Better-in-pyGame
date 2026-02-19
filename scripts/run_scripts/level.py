@@ -19,7 +19,7 @@ def load_level(game):
     
     game.coinsObjects = []
 
-    game.hearts = Hearts(game.assets['hearts'], count=game.hearts_count)
+    game.hearts = Hearts(game.assets['hearts'], count=32)
 
 def gen_obstacle(game):
     if game.cooldown == 0:
@@ -41,8 +41,15 @@ def gen_obstacle(game):
         game.cooldown -= 1
 
 def gen_platform(game):
+    print(game.cooldown)
     if game.cooldown == 0:
-        if random.random() < 0.01:
-            pos_y = random.randrange(50, 100)
+        pos_y = random.randrange(68, 132)
+        if len(game.platforms) != 0:
+            if abs(game.platforms[-1].pos[1] - pos_y) > 32:
+                game.platforms.append(Platform(game, pos_y))
+                game.cooldown = random.choice([16, 32, 48, 64, 128])
+        else:
             game.platforms.append(Platform(game, pos_y))
-            game.cooldown = 120
+            game.cooldown = random.choice([16, 32, 48, 64, 128])
+    else:
+        game.cooldown -= 1
