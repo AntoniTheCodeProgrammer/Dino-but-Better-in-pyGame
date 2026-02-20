@@ -6,7 +6,6 @@ import pygame
 # Importy z naszych skryptów
 from scripts.run_scripts.entities import Player
 from scripts.utils import load_image, load_images, load_spritesheet, rotate_images, Animation
-from scripts.save import SaveManager
 
 from scripts.loops.run_loop import game_loop
 from scripts.loops.shop_loop import shop_loop
@@ -36,17 +35,26 @@ class Game:
         new_width = int(raw_bg.get_width() * (240 / raw_bg.get_height()))
         clean_bg = pygame.transform.smoothscale(raw_bg, (new_width, 240))
 
-        # Ładowanie Assetów (Słownik)
+        # Ładowanie Assetów
         self.assets = {
             'obstacle': load_images('obstacles', colorkey=(0,0,0)),
             'heart': load_image('hearts/heart.png'),
             'coin': load_image('coin/coin3.png'),
             'coin/sheet': Animation(load_spritesheet('coin/coin-Sheet.png', 16, 16), img_dur=10),
             'background': clean_bg,
-            'grass': load_image('grass.png'),
             'hearts': load_images('hearts/background'),
+
+            'grass': load_image('blocks/grass.png'),
+            'stone1': load_image('blocks/stone1.png'),
+            'stone2': load_image('blocks/stone2.png'),
+            'stone_grass1': load_image('blocks/stone_grass1.png'),
+            'stone_grass2': load_image('blocks/stone_grass2.png'),
+            'stone_grass3': load_image('blocks/stone_grass3.png'),
+            
             'open': load_image('doors/Doors_open.png'),
             'closed': load_image('doors/Doors_closed.png'),
+
+            'shop_01': Animation(load_spritesheet('objects/shop_01.png', 32, 32), img_dur=6),
             
             # Animacje Kota
             'player/run': Animation(load_spritesheet('cat/run.png', 32, 32), img_dur=6),
@@ -81,9 +89,6 @@ class Game:
         self.unlocked_gates = []
         self.full_HP = 1
         self.stats = {}
-
-        self.save_manager = SaveManager(self)
-        self.save_manager.load()
 
         # Inicjalizacja obiektów
         self.player = Player(self, (50,50), (14,14), animation_offset=(-9,-14))

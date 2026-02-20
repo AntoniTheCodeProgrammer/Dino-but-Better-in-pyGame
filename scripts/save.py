@@ -43,3 +43,5 @@ class SaveManager:
         self.game.inventory = data.get("inventory", [])
         self.game.unlocked_gates = data.get("unlocked_gates", [])
         self.game.stats = data.get("stats", {"lives": 1, "damage": 1})
+
+    

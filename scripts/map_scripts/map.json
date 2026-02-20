@@ -1,24 +1,77 @@
 {
   "tile_size": 16,
+  "spawn": [20, 19],
   "layers": {
     "background": "background", 
     "blocks": [
-        {"asset": "grass", "pos": [1, 5]},
-        {"asset": "grass", "pos": [2, 5]},
-        {"asset": "grass", "pos": [3, 5]},
-        {"asset": "grass", "pos": [4, 5]},
-        {"asset": "grass", "pos": [5, 5]},
-        {"asset": "grass", "pos": [6, 5]},
-        {"asset": "grass", "pos": [7, 5]},
-        {"asset": "grass", "pos": [8, 5]},
-        {"asset": "grass", "pos": [9, 5]},
-        {"asset": "grass", "pos": [10, 5]}
+      {"asset": "grass", "pos": [8, 20]},
+      {"asset": "grass", "pos": [9, 20]},
+      {"asset": "grass", "pos": [10, 20]},
+      {"asset": "grass", "pos": [11, 20]},
+      {"asset": "grass", "pos": [12, 20]},
+      {"asset": "grass", "pos": [13, 20]},
+      {"asset": "grass", "pos": [14, 20]},
+      {"asset": "grass", "pos": [15, 20]},
+      {"asset": "grass", "pos": [16, 20]},
+      {"asset": "grass", "pos": [17, 20]},
+      {"asset": "grass", "pos": [18, 20]},
+      {"asset": "grass", "pos": [19, 20]},
+      {"asset": "grass", "pos": [20, 20]},
+      {"asset": "grass", "pos": [21, 20]},
+      {"asset": "grass", "pos": [22, 20]},
+      {"asset": "grass", "pos": [23, 20]},
+      {"asset": "grass", "pos": [24, 20]},
+      {"asset": "grass", "pos": [25, 20]},
+      {"asset": "grass", "pos": [8, 21]},
+      {"asset": "grass", "pos": [9, 21]},
+      {"asset": "grass", "pos": [10, 21]},
+      {"asset": "grass", "pos": [11, 21]},
+      {"asset": "grass", "pos": [12, 21]},
+      {"asset": "grass", "pos": [13, 21]},
+      {"asset": "grass", "pos": [14, 21]},
+      {"asset": "grass", "pos": [15, 21]},
+      {"asset": "grass", "pos": [16, 21]},
+      {"asset": "grass", "pos": [17, 21]},
+      {"asset": "grass", "pos": [18, 21]},
+      {"asset": "grass", "pos": [19, 21]},
+      {"asset": "grass", "pos": [20, 21]},
+      {"asset": "grass", "pos": [21, 21]},
+      {"asset": "grass", "pos": [22, 21]},
+      {"asset": "grass", "pos": [23, 21]},
+      {"asset": "grass", "pos": [24, 21]},
+      {"asset": "grass", "pos": [25, 21]},
+
+      {"asset": "grass", "pos": [16, 15]},
+      {"asset": "grass", "pos": [17, 15]},
+      {"asset": "grass", "pos": [18, 15]},
+      {"asset": "grass", "pos": [19, 15]},
+
+      {"asset": "grass", "pos": [20, 11]},
+      {"asset": "grass", "pos": [21, 11]},
+      {"asset": "grass", "pos": [22, 11]},
+      {"asset": "grass", "pos": [23, 11]},
+
+      {"asset": "grass", "pos": [27, 18]},
+      {"asset": "grass", "pos": [28, 18]},
+      
+      {"asset": "grass", "pos": [31, 15]},
+      {"asset": "grass", "pos": [32, 15]},
+
+      {"asset": "grass", "pos": [27, 12]},
+      {"asset": "grass", "pos": [28, 12]},
+
+      {"asset": "grass", "pos": [35, 11]},
+      {"asset": "grass", "pos": [36, 11]},
+
+      {"asset": "grass", "pos": [31, 8]},
+
+      {"asset": "grass", "pos": [27, 5]},
+      {"asset": "grass", "pos": [28, 5]}
     ],
     "objects": [
-        {"type": "gate", "pos": [10, 5], "id": "gate_01"},
-        {"type": "level", "pos": [20, 10] , "id": "lv_01"}
+        {"type": "gate", "pos": [11, 19], "id": "gate_01"},
+        {"type": "shop", "pos": [9, 19], "id": "shop_01"}
     ],
-    "decorations": [],
-    "spawn": [5, 4]
+    "decorations": []
   }
 }

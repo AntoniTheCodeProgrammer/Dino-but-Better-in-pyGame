@@ -7,7 +7,7 @@ from scripts.run_scripts.ground import Ground
 from scripts.config import LEVELS
 
 def game_loop(game):
-    load_level(game)   
+    load_level(game)
     boss_fight = False
     
     invincibility = 0
@@ -101,11 +101,15 @@ def game_loop(game):
                 game.coins += 1
             coin.render(game.display)
 
+
         # --- UPDATE GRACZA ---
         if not game.dead:
             # Obliczanie prędkości ruchu tła / game.fast_boots * game.normal_walk
             move_speed = (game.movement[1]-game.movement[0]) / 2
-            game.player.update(movement=[move_speed, 0])
+            rects_platform = [platform.rect() for platform in game.platforms]
+            floor_rect = pygame.Rect(0, 164, 320, 16) 
+            rects_platform.append(floor_rect)
+            game.player.update(movement=[move_speed, 0], colliders=rects_platform)
             
             game.points += 0.03
             # game.player.update_flamethrower()
@@ -155,7 +159,7 @@ def game_loop(game):
                     game.movement[0] = True
                 if event.key == pygame.K_RIGHT:
                     game.movement[1] = True
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                     if not game.dead:
                         game.player.jump()
                     else:

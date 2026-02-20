@@ -42,15 +42,19 @@ class Coin:
 
 class Platform:
     def __init__(self, game, pos_y):
-        self.pos = [200, pos_y]
+        self.pos = [400, pos_y]
         self.image = game.assets['grass']
         self.game = game
         self.width = self.image.get_width()
+        self.lenght = 3
+
+    def rect(self):
+        return pygame.Rect(self.pos[0], self.pos[1], self.width * self.lenght, self.image.get_height())
 
     def update(self, alive = 0, speed = 1):
         if alive == 0:
             self.pos[0] -= max(1, 1 * (speed / 2))
 
     def render(self, surf):
-        for i in range(3):
+        for i in range(self.lenght):
             surf.blit(self.image, (self.pos[0] + self.width * i, self.pos[1]))

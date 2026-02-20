@@ -20,7 +20,7 @@ BOSSES = {
 }
 
 LEVELS = {
-    0: {'name': 'garden', 'ground': 'grass', 'length': 1000, 'boss': 0, 'bg': 'bg_0'},
+    0: {'name': 'garden', 'ground': 'grass', 'length': 100, 'boss': 0, 'bg': 'bg_0'},
     1: {'name': 'forest', 'ground': 'dirt', 'length': 5000, 'boss': -1, 'bg': 'bg_1'},
     2: {'name': 'cave', 'ground': 'stone', 'length': 3000, 'boss': 1, 'bg': 'bg_2'},
 }
