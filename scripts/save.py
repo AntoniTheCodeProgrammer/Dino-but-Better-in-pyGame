@@ -10,10 +10,10 @@ class SaveManager:
 
     def save(self):
         data = {
-            "coins": self.game.coins,
-            "inventory": self.game.inventory,
+            "coins": self.game.inventory.coins,
+            "inventory": self.game.inventory.items,
             "unlocked_gates": self.game.unlocked_gates,
-            "stats": self.game.stats,
+            "stats": self.game.stats.to_dict(),
         }
 
         try:
@@ -39,9 +39,9 @@ class SaveManager:
             self.apply_state(DEFAULT_STATE)
 
     def apply_state(self, data):
-        self.game.coins = data.get("coins", 0)
-        self.game.inventory = data.get("inventory", [])
+        self.game.inventory.coins = data.get("coins", 0)
+        self.game.inventory.items = data.get("inventory", [])
         self.game.unlocked_gates = data.get("unlocked_gates", [])
-        self.game.stats = data.get("stats", {"lives": 1, "damage": 1})
+        self.game.stats.load_dict(data.get("stats", {}))
 
     

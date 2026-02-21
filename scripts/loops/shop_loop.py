@@ -5,9 +5,7 @@ import sys
 from scripts.config import ITEMS
 from scripts.shop_scripts.shop import buy_item, has_item
 
-def shop_loop(game):
-    game.lives = max(1, game.full_HP)
-    
+def shop_loop(game):    
     # Konfiguracja siatki
     ITEM_SIZE_X = 90
     ITEM_SIZE_Y = 50
@@ -37,17 +35,17 @@ def shop_loop(game):
         ui_padding = 8 
         coin_img = game.assets['coin']
         game.display.blit(coin_img, (ui_padding, ui_padding))
-        coin_text = game.font2.render(f'{int(game.coins)}', True, (255, 255, 255))
+        coin_text = game.font2.render(f'{int(game.inventory.coins)}', True, (255, 255, 255))
         game.display.blit(coin_text, (ui_padding + coin_img.get_width() + 5, ui_padding + 2))
 
         # Serca
         heart_img = game.assets['heart']
         heart_y = ui_padding + 20 
         game.display.blit(heart_img, (ui_padding, heart_y))
-        life_text = game.font2.render(f'{game.full_HP}', True, (255, 255, 255))
+        life_text = game.font2.render(f'{game.stats.health}', True, (255, 255, 255))
         game.display.blit(life_text, (ui_padding + heart_img.get_width() + 5, heart_y + 2))
 
-        items_in_shop = ['double_jump', 'normal_walk', 'flamethrower', 'extra_life', 'magic_boots', 'more hearts']
+        items_in_shop = ['double_jump', 'normal_walk', 'flamethrower', 'extra_life', 'fast_boots', 'more hearts']
 
         # --- Rysowanie Przedmiotów ---
         for i, item_id in enumerate(items_in_shop):
@@ -70,7 +68,7 @@ def shop_loop(game):
             # Kolor nazwy (Kupiony / Stać / Nie stać)
             if is_bought:
                 name_color = (255, 80, 80)
-            elif game.coins >= ITEMS[item_id]['price']:
+            elif game.inventory.coins >= ITEMS[item_id]['price']:
                 name_color = (80, 255, 80)
             else:
                 name_color = (150, 150, 150)

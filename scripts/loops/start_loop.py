@@ -58,14 +58,16 @@ def start_loop(game):
                 if draw_button(f'Slot {i}', 70 + (i * 20)):
                     save_slot = "saves/gameslot" + str(i) + ".json"
                     game.save_manager = SaveManager(game, filename=save_slot)
-                    
+                    game.state = 'map'
+
                     if menu_mode == 'new_game':
                         game.save_manager.apply_state(DEFAULT_STATE)
-                        game.save()
+                        game.save_manager.save()
+                        game.state = 'game'
                         pass
                     
                     game.save_manager.load()
-                    game.state = 'game'
+                    
 
         
 

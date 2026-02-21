@@ -4,10 +4,11 @@ import sys
 import pygame
 
 # Importy z naszych skryptów
-from scripts.run_scripts.entities import Player
+from scripts.player.inventory import Inventory
+from scripts.player.stats import Stats
 from scripts.utils import load_image, load_images, load_spritesheet, rotate_images, Animation
 
-from scripts.loops.run_loop import game_loop
+from scripts.loops.run_loop import run_loop
 from scripts.loops.shop_loop import shop_loop
 from scripts.loops.start_loop import start_loop
 from scripts.loops.map_loop import map_loop
@@ -74,27 +75,11 @@ class Game:
         self.sfx['jump'].set_volume(0.7)
         self.sfx['ambience'].set_volume(0.2)
         
-        # Zmienne Gracza (Ekwipunek)
-        
-        # self.double_jump = False
-        # self.normal_walk = -1
-        # self.flametrower = False
-        # self.flametrower_cooldown = 0
-        # self.flame = 0
-        
-        # self.fast_boots = 2
-        # self.hearts_count = 32
-        self.coins = 20
-        self.inventory = []
-        self.unlocked_gates = []
-        self.full_HP = 1
-        self.stats = {}
+        # Zmienne Gracza
+        self.inventory = Inventory()
+        self.stats = Stats()      
 
-        # Inicjalizacja obiektów
-        self.player = Player(self, (50,50), (14,14), animation_offset=(-9,-14))
-
-        self.screenshake = 0
-        # self.high_score = 0
+        self.transition = -30
 
         self.level = 0
         self.state = 'start'
@@ -113,7 +98,7 @@ class Game:
         while True:
             # MANAGER STANÓW
             if self.state == 'game':
-                game_loop(self)
+                run_loop(self)
             elif self.state == 'shop':
                 shop_loop(self)
             elif self.state == 'start':

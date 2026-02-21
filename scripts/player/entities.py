@@ -73,10 +73,12 @@ class Player(PhysicsEntity):
     def __init__(self, game, pos, size, animation_offset=(-3,-3)):
         super().__init__(game, 'player', pos, size)
         self.air_time = 0
-        self.jumps = 1
+        self.max_jumps = game.stats.jumps
+        self.jumps = 0
         self.animation_offset = animation_offset
         
     def update(self, movement=(0,0), colliders=[]):
+        movement = movement * self.game.stats.speed
         super().update(movement=movement, colliders=colliders)
      
         if self.game.state == "game":
@@ -90,7 +92,7 @@ class Player(PhysicsEntity):
         
         if self.collisions['down']:
             self.air_time = 0
-            self.jumps = 1
+            self.jumps = self.max_jumps
           
         if self.air_time > 4:
             self.set_action('jump')
@@ -98,7 +100,7 @@ class Player(PhysicsEntity):
             self.set_action('run')
 
     def jump(self):
-        if self.jumps:
+        if self.jumps > 0:
             self.game.sfx['jump'].play()
             self.velocity[1] = -3.5
             self.jumps -= 1

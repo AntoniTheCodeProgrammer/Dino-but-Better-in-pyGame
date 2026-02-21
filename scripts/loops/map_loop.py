@@ -1,15 +1,20 @@
 import pygame
 import sys
 
+from scripts.player.entities import Player
 from scripts.map_scripts.map import load_map
 
 def map_loop(game):
     game.save_manager.save()
 
+    game.stats.reset()
+    game.inventory.apply_passives(game)
+    # game.upgrades.apply_passives(game)
+
+    player = Player(game, (50,50), (14,14), animation_offset=(-9,-14)) 
+
     background, blocks, gates, interactables = load_map(game, 'scripts/map_scripts/map.json')
 
-    game.player.velocity = [0, 0]
-    game.player.air_time = 0
     game.movement = [0,0]
     game.dead = 0
     game.transition = -30
@@ -21,8 +26,8 @@ def map_loop(game):
         game.display.blit(game.assets[background], (0,0))
 
         # Scroll
-        target_x = game.player.pos[0] + (game.player.size[0] / 2) - (game.display.get_width() / 2)
-        target_y = game.player.pos[1] + (game.player.size[1] / 2) - (game.display.get_height() / 2)
+        target_x = player.pos[0] + (player.size[0] / 2) - (game.display.get_width() / 2)
+        target_y = player.pos[1] + (player.size[1] / 2) - (game.display.get_height() / 2)
         scroll[0] += (target_x - scroll[0]) / 10
         scroll[1] += (target_y - scroll[1]) / 10
         render_scroll = (int(scroll[0]), int(scroll[1]))
@@ -51,9 +56,9 @@ def map_loop(game):
             rects_mapy = [block['rect'] for block in blocks]
             rects_mapy.extend(rects_gates)
             move_speed = (game.movement[1]-game.movement[0])
-            game.player.update(movement=[move_speed, 0], colliders=rects_mapy)
+            player.update(movement=[move_speed, 0], colliders=rects_mapy)
         
-        game.player.render(game.display, scroll=render_scroll)
+        player.render(game.display, scroll=render_scroll)
 
         # decorations
 
@@ -64,14 +69,14 @@ def map_loop(game):
         # Monety
         coin_img = game.assets['coin']
         game.display.blit(coin_img, (ui_padding, ui_padding))
-        coin_text = game.font2.render(f'{int(game.coins)}', True, (255, 255, 255))
+        coin_text = game.font2.render(f'{int(game.inventory.coins)}', True, (255, 255, 255))
         game.display.blit(coin_text, (ui_padding + coin_img.get_width() + 5, ui_padding + 2))
 
         # Życia
         heart_img = game.assets['heart']
         heart_y = ui_padding + 20 
         game.display.blit(heart_img, (ui_padding, heart_y))
-        life_text = game.font2.render(f'{game.full_HP}', True, (255, 255, 255))
+        life_text = game.font2.render(f'{game.stats.health}', True, (255, 255, 255))
         game.display.blit(life_text, (ui_padding + heart_img.get_width() + 5, heart_y + 2))
 
 
@@ -90,13 +95,13 @@ def map_loop(game):
                 if event.key == pygame.K_RIGHT: 
                     game.movement[1] = True
                 if event.key == pygame.K_SPACE or event.key == pygame.K_UP: 
-                    game.player.jump()
+                    player.jump()
                 
                 if event.key == pygame.K_ESCAPE:
                     game.state = 'start'
 
                 if event.key == pygame.K_e:
-                    player_rect = game.player.rect()
+                    player_rect = player.rect()
                     for object in interactables:
                         if player_rect.colliderect(object.rect):
                             object.use(game)
