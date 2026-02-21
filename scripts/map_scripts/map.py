@@ -40,6 +40,5 @@ def load_map(game, path):
         
     spawn_x = data['spawn'][0] * tile_size
     spawn_y = data['spawn'][1] * tile_size
-    game.player.pos = [spawn_x, spawn_y]
     
-    return  background, blocks, gates, interactables
+    return  background, blocks, gates, interactables, [spawn_x, spawn_y]

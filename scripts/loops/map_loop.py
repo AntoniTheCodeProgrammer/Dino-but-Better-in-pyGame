@@ -11,19 +11,21 @@ def map_loop(game):
     game.inventory.apply_passives(game)
     # game.upgrades.apply_passives(game)
 
-    player = Player(game, (50,50), (14,14), animation_offset=(-9,-14)) 
+    background, blocks, gates, interactables, spawn = load_map(game, 'scripts/map_scripts/map.json')
+    player = Player(game, spawn, (14,14), animation_offset=(-9,-14)) 
 
-    background, blocks, gates, interactables = load_map(game, 'scripts/map_scripts/map.json')
-
-    game.movement = [0,0]
-    game.dead = 0
+    movement = [0, 0]
+    dead = False
     game.transition = -30
-
     scroll = [0, 0]
 
     while game.state == 'map':
         game.display.fill((0,0,0,0))
         game.display.blit(game.assets[background], (0,0))
+
+        # Animacja przejścia
+        if game.transition < 0:
+            game.transition += 1
 
         # Scroll
         target_x = player.pos[0] + (player.size[0] / 2) - (game.display.get_width() / 2)
@@ -40,6 +42,7 @@ def map_loop(game):
             game.display.blit(img, (render_x, render_y))
 
         rects_gates = []
+
         # Objects
         for gate in gates:
             gate.render(game.display, render_scroll)
@@ -52,10 +55,10 @@ def map_loop(game):
 
 
         # Ruch gracza
-        if not game.dead:
+        if not dead:
             rects_mapy = [block['rect'] for block in blocks]
             rects_mapy.extend(rects_gates)
-            move_speed = (game.movement[1]-game.movement[0])
+            move_speed = (movement[1] - movement[0])
             player.update(movement=[move_speed, 0], colliders=rects_mapy)
         
         player.render(game.display, scroll=render_scroll)
@@ -78,11 +81,6 @@ def map_loop(game):
         game.display.blit(heart_img, (ui_padding, heart_y))
         life_text = game.font2.render(f'{game.stats.health}', True, (255, 255, 255))
         game.display.blit(life_text, (ui_padding + heart_img.get_width() + 5, heart_y + 2))
-
-
-        # --- SKALOWANIE I UPDATE ---
-        game.screen.blit(pygame.transform.scale(game.display, game.screen.get_size()), (0,0))
-        pygame.display.update()
         
         # --- EVENTY ---
         for event in pygame.event.get():
@@ -91,9 +89,9 @@ def map_loop(game):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT: 
-                    game.movement[0] = True
+                    movement[0] = True
                 if event.key == pygame.K_RIGHT: 
-                    game.movement[1] = True
+                    movement[1] = True
                 if event.key == pygame.K_SPACE or event.key == pygame.K_UP: 
                     player.jump()
                 
@@ -109,8 +107,18 @@ def map_loop(game):
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT: 
-                    game.movement[0] = False
+                    movement[0] = False
                 if event.key == pygame.K_RIGHT: 
-                    game.movement[1] = False
+                    movement[1] = False
+
+        # --- RYSOWANIE KOŃCOWE ---
+        if game.transition:
+            transition_surf = pygame.Surface(game.display.get_size())
+            pygame.draw.circle(transition_surf, (255, 255, 255), (game.display.get_width() // 2, game.display.get_height() // 2), (30 - abs(game.transition)) * 8)
+            transition_surf.set_colorkey((255, 255, 255))
+            game.display.blit(transition_surf, (0, 0))
+
+        game.screen.blit(pygame.transform.scale(game.display, game.screen.get_size()), (0,0))
+        pygame.display.update()
 
         game.clock.tick(60)

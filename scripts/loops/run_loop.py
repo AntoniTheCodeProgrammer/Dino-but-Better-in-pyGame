@@ -2,7 +2,6 @@
 import pygame
 import sys
 
-from scripts.player.entities import Player
 from scripts.run_scripts.level import RunLevel
 from scripts.run_scripts.ground import Ground
 from scripts.config import LEVELS
